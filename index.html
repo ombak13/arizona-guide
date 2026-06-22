@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#111111">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Arizona & Utah">
+<title>Grand Circle — Arizona & Utah</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--black:#111;--grey:#6b6b6b;--light:#e8e8e8;--bg:#fafafa;color-scheme:light only}
+html{background:#fff}
+html,body{-webkit-text-size-adjust:100%}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',-apple-system,sans-serif;color:#111 !important;background:#fff !important;max-width:560px;margin:0 auto;padding:20px 16px 60px}
+header{margin-bottom:18px}
+.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey)}
+h1{font-size:24px;font-weight:700;margin:6px 0 2px;line-height:1.2}
+.route{font-size:13px;color:var(--grey)}
+nav{display:flex;border-bottom:1px solid var(--light);margin-bottom:18px}
+nav button{flex:1;padding:12px 4px;border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--grey);cursor:pointer;border-bottom:2px solid transparent}
+nav button.active{color:var(--black);font-weight:600;border-bottom-color:var(--black)}
+.pane{display:none}.pane.active{display:block}
+.switch{display:flex;gap:8px;margin-bottom:16px}
+.switch button{padding:6px 14px;border-radius:16px;font-size:12px;font-family:inherit;cursor:pointer;font-weight:500;border:1px solid var(--light);background:#fff;color:var(--grey)}
+.switch button.on{border-color:var(--black);background:var(--black);color:#fff}
+.day{border-bottom:1px solid var(--light)}
+.day-head{width:100%;display:flex;align-items:center;gap:10px;padding:14px 4px;background:transparent;border:none;cursor:pointer;font-family:inherit;text-align:left}
+.num{min-width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.day-date{display:block;font-size:11px;color:var(--grey)}
+.day-title{display:block;font-size:15px;font-weight:500}
+.drive{font-size:11px;color:var(--grey);background:var(--light);border-radius:4px;padding:2px 8px;white-space:nowrap}
+.day-body{padding:0 4px 16px 44px;display:none}
+.day.open .day-body{display:block}
+.item{display:flex;gap:8px;margin-bottom:8px;font-size:13.5px;line-height:1.45}
+.cat{font-size:10px;color:var(--grey);border:1px solid var(--light);border-radius:3px;padding:1px 6px;height:fit-content;white-space:nowrap;margin-top:1px}
+.lodging{margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:6px;font-size:13px}
+.lodging b{font-weight:600}
+.lodging .note{color:var(--grey);margin-top:3px;font-size:12px}
+.cat-group{margin-bottom:22px}
+.cat-group h3,.cl-group h3{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px}
+.cat-row{display:flex;gap:10px;margin-bottom:7px;font-size:13.5px;line-height:1.4}
+.cat-row .j{min-width:26px;font-size:11px;font-weight:600}
+.maploc{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--light);text-decoration:none}
+.maploc .n{min-width:24px;height:24px;border-radius:50%;background:var(--black);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.maploc .name{flex:1;font-size:14px;color:var(--black)}
+.maploc .d{font-size:11px;color:var(--grey)}
+.progress-wrap{margin-bottom:18px}
+.progress-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--grey);margin-bottom:6px}
+.bar{height:6px;background:var(--light);border-radius:3px}
+.bar>div{height:6px;background:var(--black);border-radius:3px;transition:width .25s;width:0}
+.cl-group{margin-bottom:20px}
+.cl-item{display:flex;gap:10px;align-items:flex-start;padding:7px 0;cursor:pointer;font-size:13.5px;line-height:1.4}
+.cl-item input{margin-top:2px;accent-color:#111;color-scheme:light}
+.cl-item.done span{color:var(--grey);text-decoration:line-through}
+.b-row{display:flex;justify-content:space-between;gap:12px;padding:12px 4px;border-bottom:1px solid var(--light);align-items:center}
+.b-post{font-size:14px;font-weight:500}
+.b-detail{font-size:12px;color:var(--grey);margin-top:2px}
+.b-est{font-size:12px;color:var(--grey);white-space:nowrap;text-align:right}
+.b-real{width:90px;padding:6px 8px;border:1px solid var(--light);border-radius:6px;font-family:inherit;font-size:14px;text-align:right;background:#fff;color:#111}
+.b-real::placeholder{color:#b0b0b0}
+.b-real:focus{outline:none;border-color:var(--black)}
+.totals{padding:16px 4px;font-size:14px}
+.totals .line{display:flex;justify-content:space-between;margin-bottom:6px}
+.totals .big{font-size:16px;font-weight:700}
+.muted{font-size:12px;color:var(--grey);line-height:1.5;margin-top:8px}
+svg text{font-family:'DM Sans',sans-serif}
+.storage-warn{font-size:11px;color:#b05c00;background:#fff7ec;border-radius:6px;padding:8px 10px;margin-bottom:12px;display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">4 – 16 novembre · 12 nuits · Solo</div>
+  <h1>Grand Circle — Arizona & Utah</h1>
+  <div class="route">Phoenix → Tucson → Bisbee → Sedona → Flagstaff → Grand Canyon → Monument Valley → Page → Bryce → Zion → Las Vegas</div>
+</header>
+<div class="storage-warn" id="storageWarn">⚠️ Sauvegarde locale indisponible dans cet environnement — checklist et budget ne persisteront pas. Sur GitHub Pages / navigateur, tout sera sauvegardé.</div>
+<nav>
+  <button data-tab="programme" class="active">Programme</button>
+  <button data-tab="carte">Carte</button>
+  <button data-tab="checklist">Checklist</button>
+  <button data-tab="budget">Budget</button>
+</nav>
+<div class="pane active" id="pane-programme">
+  <div class="switch">
+    <button data-mode="jour" class="on">Par jour</button>
+    <button data-mode="categorie">Par catégorie</button>
+  </div>
+  <div id="prog-jour"></div>
+  <div id="prog-cat" style="display:none"></div>
+</div>
+<div class="pane" id="pane-carte">
+  <div id="mapsvg" style="border:1px solid var(--light);border-radius:8px;overflow:hidden;margin-bottom:14px;background:var(--bg)"></div>
+  <p class="muted" style="margin:0 0 14px">Tracé schématique de l'itinéraire. Chaque étape est cliquable ci-dessous vers Google Maps.</p>
+  <div id="maplist"></div>
+</div>
+<div class="pane" id="pane-checklist">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span id="cl-count"></span><span id="cl-pct"></span></div>
+    <div class="bar"><div id="cl-bar"></div></div>
+  </div>
+  <div id="cl-groups"></div>
+</div>
+<div class="pane" id="pane-budget">
+  <div id="b-rows"></div>
+  <div class="totals">
+    <div class="line"><span>Estimé</span><span id="t-est"></span></div>
+    <div class="line big"><span>Dépensé réel</span><span id="t-real">0 €</span></div>
+  </div>
+  <p class="muted">Hors essence (exclue par préférence). Saisis tes dépenses réelles dans la colonne de droite — elles sont sauvegardées automatiquement. Fourchette haute = The View + lodge in-park. Drop fee one-way à confirmer (0–300 €).</p>
+</div>
+<script>
+// ———————— DONNÉES ————————
+const DAY_COLORS=["#1a1a1a","#3d3d3d","#5c5c5c","#7a7a7a","#2b2b2b","#4a4a4a","#696969","#333","#525252","#717171","#242424","#434343","#626262"];
+const ITINERARY=[
+{day:1,date:"Mer 4 nov",title:"Paris → Phoenix → Tucson",drive:{dist:"185 km",time:"1h45"},lodging:{type:"Hôtel",name:"Tucson, centre / 4th Avenue",note:"2 nuits — base sud du voyage"},items:[["Transport","Vol Paris → Phoenix DIRECT, arrivée 13:35 (11h25 de vol)"],["Transport","Récupération SUV (vérifier drop fee one-way PHX → Vegas)"],["Transport","I-10 vers Tucson (1h45 d'autoroute facile)"],["Soirée","4th Avenue — premier Sonoran hot dog, bars de comptoir"]]},
+{day:2,date:"Jeu 5 nov",title:"Tucson",drive:null,lodging:{type:"Hôtel",name:"Idem nuit 1",note:""},items:[["Nature","SUNRISE à Saguaro NP West — sentiers entre cactus géants"],["Visite","Mission San Xavier del Bac (la « colombe blanche du désert »)"],["Visite","Downtown + Barrio Viejo (façades adobe colorées)"],["Soirée","4th Avenue — scène locale UofA"]]},
+{day:3,date:"Ven 6 nov",title:"Tucson → Tombstone → Bisbee",drive:{dist:"160 km",time:"1h45"},lodging:{type:"Hôtel historique ✨",name:"Copper Queen Hotel, Bisbee",note:"1902, au cœur de la ville minière"},items:[["Visite","Tombstone : 1h-1h30 au second degré — Bird Cage Theatre, Boothill"],["Visite","Bisbee : ruelles, escaliers, galeries — l'anti-Tombstone"],["Activité","Option : Queen Mine Tour (avec d'anciens mineurs)"],["Soirée","Copper Queen Saloon — les locaux y sont vraiment"]]},
+{day:4,date:"Sam 7 nov",title:"Bisbee → Sedona → Flagstaff",drive:{dist:"430 km",time:"4h45"},lodging:{type:"Motel",name:"Flagstaff, Route 66 / downtown",note:"Ville universitaire — LA soirée sociale du voyage"},items:[["Transport","Matin Bisbee, puis I-10 / I-17 nord — LONGUE journée, assumée"],["Visite","Sedona : Airport Mesa overlook, Chapel of the Holy Cross"],["Nature","Remontée par Oak Creek Canyon (89A) — l'une des plus belles routes des USA"],["Soirée","Brewpubs Flagstaff : Mother Road, Hops on Birch — comptoir, saisonniers des parcs"]]},
+{day:5,date:"Dim 8 nov",title:"Flagstaff → Grand Canyon",drive:{dist:"130 km",time:"1h30"},lodging:{type:"Lodge",name:"In-park (Bright Angel, Maswik) ou Tusayan",note:"In-park = sunrise à pied, réserver très tôt"},items:[["Transport","Flagstaff → Williams (stop Route 66) → South Rim"],["Nature","South Kaibab → Ooh Aah Point (2h A/R) — descendre SOUS la rim"],["Nature","Rim Trail en fin d'après-midi"],["Nature","COUCHER DE SOLEIL : Hopi Point (orienté ouest)"]]},
+{day:6,date:"Lun 9 nov",title:"Grand Canyon → Monument Valley",drive:{dist:"280 km",time:"2h45"},lodging:{type:"Lodge ✨✨",name:"Option A : The View · Option B : Goulding's",note:"The View = buttes depuis la chambre (~250-350€) · Goulding's = historique, 5 min (~150-200€)"},items:[["Nature","LEVER DE SOLEIL : Mather Point (orienté est)"],["Transport","Sortie par Desert View (watchtower) → Cameron → US-160. Entrée Navajo Nation (pas d'alcool)"],["Nature","17-Mile scenic drive dans la vallée"],["Nature","COUCHER DE SOLEIL : John Ford Point"]]},
+{day:7,date:"Mar 10 nov",title:"Monument Valley → Page",drive:{dist:"200 km",time:"2h"},lodging:{type:"Motel / chaîne",name:"Page",note:"Base pour Antelope"},items:[["Nature","LEVER DE SOLEIL sur les buttes depuis le lodge"],["Activité","Balade à cheval avec guide navajo (1h30-2h)"],["Visite","Antelope Canyon avec guide navajo — lumière de midi idéale (RÉSA OBLIGATOIRE)"],["Nature","COUCHER DE SOLEIL : Horseshoe Bend (20 min de marche, orienté ouest)"]]},
+{day:8,date:"Mer 11 nov",title:"Page → Bryce Canyon",drive:{dist:"245 km",time:"2h30"},lodging:{type:"Motel",name:"Panguitch",note:"Ville d'éleveurs mormone — Cowboy's Smokehouse à côté"},items:[["Visite","Matin Page : Glen Canyon Dam / Lake Powell overlook (optionnel)"],["Transport","US-89 nord — l'une des plus belles routes du trip (pas de changement d'heure)"],["Nature","COUCHER DE SOLEIL sur les hoodoos : Sunset / Inspiration Point"],["Resto","Dîner au comptoir du Cowboy's Smokehouse Café"]]},
+{day:9,date:"Jeu 12 nov",title:"Bryce → Zion",drive:{dist:"120 km",time:"1h45"},lodging:{type:"Cabin / Airbnb ✨",name:"East Zion (secteur Orderville)",note:"2 nuits — logement nature sous les étoiles"},items:[["Nature","LEVER DE SOLEIL à Bryce + boucle Navajo Loop / Queen's Garden (2h)"],["Transport","Route 9 — tunnel Zion-Mt Carmel scénique"],["Nature","Après-midi : Zion scenic drive + Riverside Walk (1h30)"],["Nature","COUCHER DE SOLEIL : Canyon Overlook Trail (1h A/R)"]]},
+{day:10,date:"Ven 13 nov",title:"Zion",drive:null,lodging:{type:"Cabin / Airbnb ✨",name:"Idem nuit 9 (East Zion)",note:""},items:[["Nature","Angels Landing SI permis loterie obtenu (tenter recreation.gov + loterie la veille)"],["Nature","Sinon : Watchman Trail, Emerald Pools, ou bas des Narrows selon niveau d'eau"],["Soirée","Soirée tranquille à East Zion — dernière nuit calme avant Vegas"]]},
+{day:11,date:"Sam 14 nov",title:"Zion → Las Vegas",drive:{dist:"260 km",time:"2h45"},lodging:{type:"Hôtel",name:"Las Vegas, Strip ou Downtown",note:"2 nuits — apothéose du voyage"},items:[["Transport","I-15 sud vers Vegas — tu GAGNES 1h (Nevada en PST)"],["Soirée","SAMEDI SOIR À VEGAS — Strip, sortir, fête après 10 jours de lever 6h30"]]},
+{day:12,date:"Dim 15 nov",title:"Las Vegas",drive:null,lodging:{type:"Hôtel",name:"Idem nuit 11",note:""},items:[["Nature","Red Rock Canyon scenic drive (30 min du Strip)"],["Soirée","Downtown / Fremont Street — le vieux Vegas, dernière soirée"]]},
+{day:13,date:"Lun 16 nov",title:"Las Vegas → Paris",drive:{dist:"10 km",time:"20 min"},lodging:null,items:[["Transport","Matinée Vegas libre, restitution SUV (2h30 avant le vol)"],["Transport","Vol Las Vegas → Paris DIRECT 15:25, arrivée lendemain 10:50"]]}
+];
+const LOCS=[
+{n:1,day:"J1",name:"Phoenix (arrivée)",lat:33.4352,lng:-112.0078,main:1,lx:-12,ly:0,anchor:"end"},
+{n:2,day:"J1-2",name:"Tucson",lat:32.2226,lng:-110.9747,main:1,lx:12,ly:-4},
+{n:3,day:"J2",name:"Saguaro NP West",lat:32.254,lng:-111.1973,main:0,lx:-10,ly:-8,anchor:"end"},
+{n:4,day:"J2",name:"San Xavier del Bac",lat:32.1069,lng:-111.0089,main:0,lx:-10,ly:12,anchor:"end"},
+{n:5,day:"J3",name:"Tombstone",lat:31.7129,lng:-110.0676,main:0,lx:10,ly:-4},
+{n:6,day:"J3",name:"Bisbee",lat:31.4482,lng:-109.9284,main:1,lx:10,ly:8},
+{n:7,day:"J4",name:"Sedona",lat:34.8697,lng:-111.761,main:1,lx:-12,ly:4,anchor:"end"},
+{n:8,day:"J4",name:"Flagstaff",lat:35.1983,lng:-111.6513,main:1,lx:12,ly:4},
+{n:9,day:"J5-6",name:"Grand Canyon",lat:36.0544,lng:-112.1401,main:1,lx:-12,ly:-8,anchor:"end"},
+{n:10,day:"J6",name:"Desert View",lat:36.0414,lng:-111.8261,main:0,lx:10,ly:-6},
+{n:11,day:"J6-7",name:"Monument Valley",lat:36.9816,lng:-110.1126,main:1,lx:10,ly:-4},
+{n:12,day:"J7",name:"Page / Antelope",lat:36.8619,lng:-111.3743,main:1,lx:10,ly:-8},
+{n:13,day:"J7",name:"Horseshoe Bend",lat:36.8791,lng:-111.5104,main:0,lx:-10,ly:8,anchor:"end"},
+{n:14,day:"J8",name:"Panguitch",lat:37.8225,lng:-112.4358,main:0,lx:-10,ly:-6,anchor:"end"},
+{n:15,day:"J8-9",name:"Bryce Canyon",lat:37.6228,lng:-112.1645,main:1,lx:10,ly:-6},
+{n:16,day:"J9-11",name:"Zion NP",lat:37.2133,lng:-112.9404,main:1,lx:-10,ly:-10,anchor:"end"},
+{n:17,day:"J12",name:"Red Rock Canyon",lat:36.1357,lng:-115.4277,main:0,lx:-8,ly:14,anchor:"end"},
+{n:18,day:"J11-13",name:"Las Vegas",lat:36.1699,lng:-115.1398,main:1,lx:8,ly:-8}
+];
+const ROUTE=[1,2,6,7,8,9,11,12,15,16,18];
+const CHECKLIST=[
+{group:"Réservations confirmées ✅",items:[
+{t:"Vol Air France CDG→PHX / LAS→CDG (réf XEQLNA, 730€)",done:true},
+{t:"ESTA approuvé (réf 0T2H0H2P5M1R65I7)",done:true},
+{t:"Hotel La More — Bisbee (6-7 nov, 102,20€)",done:true},
+{t:"Maswik Lodge — Grand Canyon in-park (8-9 nov, 134€)",done:true},
+{t:"The View cabine — Monument Valley (9-10 nov, $270,85)",done:true},
+{t:"Antelope Canyon Ken's Tours (10 nov 13h, $80)",done:true},
+{t:"Conteneur Cliffside — East Zion Orderville (12-14 nov, $288,69)",done:true},
+{t:"Tous les événements ajoutés à l'agenda iOS",done:true},
+{t:"Rappel loterie Angels Landing programmé (1er juillet)",done:true}
+]},
+{group:"Réservations à faire (sans urgence)",items:[
+{t:"Voco Tuxon — Tucson (4-6 nov) — sauvegardé Booking",done:false},
+{t:"High Country Motor Lodge — Flagstaff (7-8 nov) — sauvegardé",done:false},
+{t:"Motel Page (10-11 nov)",done:false},
+{t:"Motel Panguitch (11-12 nov)",done:false},
+{t:"Hôtel Las Vegas (14-16 nov, Strip/Downtown)",done:false},
+{t:"SUV one-way PHX→LAS (comparer Europcar+BoursoBank vs Booking Genius)",done:false},
+{t:"Vérifier que l'assurance BoursoBank couvre one-way + USA",done:false},
+{t:"Balade à cheval Monument Valley (Sacred Monument Tours, matin 10 nov)",done:false},
+{t:"Loterie Angels Landing — recreation.gov dès le 1er juillet",done:false},
+{t:"Pass America the Beautiful (80$ — à l'entrée du 1er parc)",done:false}
+]},
+{group:"Avant le départ",items:[
+{t:"Télécharger le PDF de l'ESTA et le ranger avec le vol",done:false},
+{t:"Télécharger les cartes offline (tout l'itinéraire — zones sans réseau)",done:false},
+{t:"eSIM US ou forfait international",done:false},
+{t:"Permis FR (+ permis international recommandé)",done:false},
+{t:"Prévoir des espèces en $ (pourboires guides navajos, diners)",done:false}
+]},
+{group:"Équipement",items:[
+{t:"Doudoune + bonnet + gants (gel nocturne Bryce / Grand Canyon)",done:false},
+{t:"Couches : t-shirts + polaire (15-25°C au sud)",done:false},
+{t:"Chaussures de marche fermées",done:false},
+{t:"Lampe frontale (sunrises avant le jour)",done:false},
+{t:"Adaptateur US + batterie externe",done:false}
+]},
+{group:"Pendant le voyage (rappels)",items:[
+{t:"Acheter de l'alcool à Page avant Monument Valley (Navajo Nation = dry)",done:false},
+{t:"Faire le plein d'essence à Kayenta (zones désertiques sans station)",done:false},
+{t:"Tenter loterie Angels Landing la veille (12 nov 12h) si pas eu en saisonnier",done:false},
+{t:"Surclassement business cash à l'enregistrement Vegas→Paris",done:false}
+]}
+];
+const BUDGET=[
+{post:"Vol Air France (XEQLNA)",detail:"Open-jaw direct, payé",min:730,max:730,real:730},
+{post:"ESTA",detail:"$40,27 — approuvé",min:35,max:35,real:34.63},
+{post:"Bisbee — Hotel La More",detail:"1 nuit, payé",min:102,max:102,real:102.20},
+{post:"Grand Canyon — Maswik Lodge",detail:"1 nuit in-park",min:134,max:134,real:134},
+{post:"Monument Valley — The View",detail:"$270,85 — cabine, payé",min:233,max:233,real:232.93},
+{post:"East Zion — Conteneur Cliffside",detail:"$288,69 — 2 nuits, payé",min:248,max:248,real:248.27},
+{post:"Antelope Canyon",detail:"$80 — Ken's Tours, payé",min:69,max:69,real:68.80},
+{post:"Tucson — Voco Tuxon",detail:"2 nuits — à réserver",min:240,max:280,real:null},
+{post:"Flagstaff — High Country Motor Lodge",detail:"1 nuit — à réserver",min:170,max:220,real:null},
+{post:"Page — motel",detail:"1 nuit — à réserver",min:80,max:110,real:null},
+{post:"Panguitch — motel",detail:"1 nuit — à réserver",min:75,max:100,real:null},
+{post:"Las Vegas — hôtel",detail:"2 nuits — à réserver",min:200,max:280,real:null},
+{post:"SUV one-way PHX→LAS",detail:"13 j, hors essence, drop fee à confirmer",min:600,max:900,real:null},
+{post:"Cheval Monument Valley",detail:"~$85 — à réserver",min:73,max:103,real:null},
+{post:"Pass America the Beautiful (non-résident)",detail:"$250 — frais non-résident inclus, à l'entrée de Saguaro",min:215,max:215,real:null},
+{post:"Repas",detail:"~50 €/j × 12",min:500,max:700,real:null},
+{post:"Essence + divers",detail:"Queen Mine, musées, pourboires, parkings",min:200,max:350,real:null}
+];
+// ———————— STOCKAGE (localStorage avec fallback mémoire) ————————
+const mem={};
+const store={
+  get(k){try{return localStorage.getItem(k)}catch(e){return mem[k]??null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v;document.getElementById('storageWarn').style.display='block'}}
+};
+
+// ———————— ONGLETS ————————
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById('pane-'+b.dataset.tab).classList.add('active');
+}));
+
+// ———————— PROGRAMME ————————
+const pj=document.getElementById('prog-jour');
+ITINERARY.forEach(d=>{
+  const div=document.createElement('div');
+  div.className='day'+(d.day===1?' open':'');
+  let items=d.items.map(([c,t])=>`<div class="item"><span class="cat">${c}</span><span>${t}</span></div>`).join('');
+  let lodg=d.lodging?`<div class="lodging"><b>🛏 ${d.lodging.type} — ${d.lodging.name}</b>${d.lodging.note?`<div class="note">${d.lodging.note}</div>`:''}</div>`:'';
+  let drive=d.drive?`<span class="drive">🚗 ${d.drive.dist} · ${d.drive.time}</span>`:'';
+  div.innerHTML=`<button class="day-head"><span class="num" style="background:${DAY_COLORS[d.day-1]}">${d.day}</span><span style="flex:1"><span class="day-date">${d.date}</span><span class="day-title">${d.title}</span></span>${drive}</button><div class="day-body">${items}${lodg}</div>`;
+  div.querySelector('.day-head').addEventListener('click',()=>div.classList.toggle('open'));
+  pj.appendChild(div);
+});
+const CATS=["Transport","Nature","Visite","Activité","Resto","Soirée"];
+const pc=document.getElementById('prog-cat');
+CATS.forEach(cat=>{
+  const rows=[];
+  ITINERARY.forEach(d=>d.items.forEach(([c,t])=>{if(c===cat)rows.push(`<div class="cat-row"><span class="j" style="color:${DAY_COLORS[d.day-1]}">J${d.day}</span><span>${t}</span></div>`)}));
+  if(rows.length)pc.innerHTML+=`<div class="cat-group"><h3>${cat}</h3>${rows.join('')}</div>`;
+});
+document.querySelectorAll('.switch button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.switch button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  pj.style.display=b.dataset.mode==='jour'?'block':'none';
+  pc.style.display=b.dataset.mode==='categorie'?'block':'none';
+}));
+
+// ———————— CARTE SVG (relief & texture) ————————
+(function(){
+  const W=560,H=600,PAD=44;
+  const LNG0=-116.3,LNG1=-108.9,LAT0=30.9,LAT1=38.4;
+  const X=lng=>PAD+(lng-LNG0)/(LNG1-LNG0)*(W-2*PAD);
+  const Y=lat=>PAD+(LAT1-lat)/(LAT1-LAT0)*(H-2*PAD);
+  const byN={};LOCS.forEach(l=>byN[l.n]=l);
+  const path=ROUTE.map((n,i)=>(i?'L':'M')+X(byN[n].lng).toFixed(1)+','+Y(byN[n].lat).toFixed(1)).join(' ');
+  const P=(lng,lat)=>X(lng).toFixed(1)+','+Y(lat).toFixed(1);
+  // Fleuve Colorado : Lake Powell → Grand Canyon → Lake Mead
+  const colorado=`M ${P(-111.0,37.1)} C ${P(-111.3,37.0)} ${P(-111.45,36.95)} ${P(-111.5,36.87)} C ${P(-111.6,36.7)} ${P(-111.75,36.6)} ${P(-111.8,36.4)} C ${P(-111.85,36.2)} ${P(-112.0,36.1)} ${P(-112.15,36.08)} C ${P(-112.6,36.05)} ${P(-113.2,36.1)} ${P(-113.7,36.0)} C ${P(-114.1,35.95)} ${P(-114.4,36.05)} ${P(-114.6,36.1)}`;
+  // Mogollon Rim (bord du plateau du Colorado)
+  const rim=`M ${P(-113.6,34.6)} C ${P(-112.8,34.8)} ${P(-112.0,34.6)} ${P(-111.4,34.4)} C ${P(-110.8,34.2)} ${P(-110.0,34.0)} ${P(-109.3,33.8)}`;
+  function mtn(lng,lat,s,c){const x=X(lng),y=Y(lat);return `<path d="M${x-s},${y} L${x},${y-s*1.3} L${x+s},${y} Z" fill="${c}" opacity="0.7"/><path d="M${x-s*0.25},${y-s*0.95} L${x},${y-s*1.3} L${x+s*0.25},${y-s*0.95} Z" fill="#fff" opacity="0.8"/>`;}
+  function hoodoo(lng,lat,c){const x=X(lng),y=Y(lat);let s='';for(let i=0;i<3;i++){s+=`<rect x="${x-7+i*5.5}" y="${y-9+i*1.5}" width="3" height="${9-i*1.5}" rx="1.5" fill="${c}" opacity="0.75"/>`;}return s;}
+  function saguaro(lng,lat){const x=X(lng),y=Y(lat);return `<g stroke="#7a9b6d" stroke-width="2.4" stroke-linecap="round" opacity="0.8" fill="none"><line x1="${x}" y1="${y}" x2="${x}" y2="${y-12}"/><path d="M${x-4.5},${y-9} v3.5 q0,2 2,2 h2.5"/><path d="M${x+4.5},${y-6} v3 q0,2 -2,2 h-2.5"/></g>`;}
+  function dunes(lng,lat,c){const x=X(lng),y=Y(lat);let s='';for(let i=0;i<3;i++){s+=`<path d="M${x-14+i*4},${y+i*5} q7,-5 14,0" stroke="${c}" stroke-width="1.6" fill="none" opacity="0.55" stroke-linecap="round"/>`;}return s;}
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">
+  <defs>
+    <linearGradient id="terr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f3e9d8"/>
+      <stop offset="0.45" stop-color="#f0e0c8"/>
+      <stop offset="1" stop-color="#ecd9be"/>
+    </linearGradient>
+    <radialGradient id="plateau" cx="0.55" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#dba87a" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#dba87a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sonora" cx="0.45" cy="0.85" r="0.55">
+      <stop offset="0" stop-color="#cfd9b8" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#cfd9b8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mojave" cx="0.08" cy="0.28" r="0.4">
+      <stop offset="0" stop-color="#e8cf9f" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#e8cf9f" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grain" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="0.55" fill="#b08d5f" opacity="0.16"/>
+      <circle cx="5" cy="4.5" r="0.45" fill="#b08d5f" opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect width="${W}" height="${H}" fill="url(#terr)"/>
+  <rect width="${W}" height="${H}" fill="url(#grain)"/>
+  <rect width="${W}" height="${H}" fill="url(#plateau)"/>
+  <rect width="${W}" height="${H}" fill="url(#sonora)"/>
+  <rect width="${W}" height="${H}" fill="url(#mojave)"/>
+  <!-- Fleuve Colorado + lacs -->
+  <path d="${colorado}" fill="none" stroke="#7fb3c8" stroke-width="3.5" stroke-linecap="round" opacity="0.85"/>
+  <ellipse cx="${X(-111.25)}" cy="${Y(37.05)}" rx="14" ry="6" fill="#7fb3c8" opacity="0.8" transform="rotate(-25 ${X(-111.25)} ${Y(37.05)})"/>
+  <text x="${X(-111.05)}" y="${Y(37.25)}" font-size="9" fill="#5d93a8" font-style="italic">Lake Powell</text>
+  <ellipse cx="${X(-114.55)}" cy="${Y(36.12)}" rx="12" ry="7" fill="#7fb3c8" opacity="0.8"/>
+  <text x="${X(-114.9)}" y="${Y(35.8)}" font-size="9" fill="#5d93a8" font-style="italic">Lake Mead</text>
+  <text x="${X(-113.1)}" y="${Y(36.25)}" font-size="9" fill="#5d93a8" font-style="italic" opacity="0.9">Colorado River</text>
+  <!-- Gorge du Grand Canyon -->
+  <path d="M ${P(-112.6,36.02)} C ${P(-112.2,36.0)} ${P(-111.9,36.05)} ${P(-111.78,36.32)}" fill="none" stroke="#b5743f" stroke-width="7" opacity="0.35" stroke-linecap="round"/>
+  <!-- Mogollon Rim -->
+  <path d="${rim}" fill="none" stroke="#c49a66" stroke-width="5" opacity="0.4" stroke-linecap="round" stroke-dasharray="2 6"/>
+  <!-- Reliefs -->
+  ${mtn(-111.68,35.36,11,'#9a8e7e')}<text x="${X(-111.45)}" y="${Y(35.45)}" font-size="8.5" fill="#8a7d6c" font-style="italic">San Francisco Peaks</text>
+  ${mtn(-112.83,37.3,8,'#b09a7e')}${mtn(-110.75,32.42,8,'#a89a82')}${mtn(-109.3,31.85,7,'#a89a82')}${mtn(-115.0,36.3,7,'#b3a285')}
+  ${hoodoo(-112.16,37.66,'#cc6f4e')}${hoodoo(-112.95,37.32,'#c97a52')}
+  ${dunes(-110.1,36.78,'#b5743f')}${dunes(-114.2,33.5,'#c49a66')}${dunes(-112.6,32.6,'#b8a878')}
+  ${saguaro(-111.55,32.4)}${saguaro(-110.6,31.95)}${saguaro(-112.3,33.0)}
+  <!-- Frontières -->
+  <line x1="${X(-114.05)}" y1="${Y(38.4)}" x2="${X(-114.05)}" y2="${Y(36.12)}" stroke="#a08a6a" stroke-dasharray="4 4" opacity="0.6"/>
+  <line x1="${X(-114.05)}" y1="${Y(37)}" x2="${X(-108.9)}" y2="${Y(37)}" stroke="#a08a6a" stroke-dasharray="4 4" opacity="0.6"/>
+  <line x1="${X(-109.05)}" y1="${Y(37)}" x2="${X(-109.05)}" y2="${Y(30.9)}" stroke="#a08a6a" stroke-dasharray="4 4" opacity="0.6"/>
+  <line x1="${PAD}" y1="${Y(31.33)}" x2="${X(-109.05)}" y2="${Y(31.33)}" stroke="#a08a6a" opacity="0.7"/>
+  <text x="${X(-110.5)}" y="${Y(37)-8}" font-size="11" fill="#a08a6a" font-weight="600" letter-spacing="2">UTAH</text>
+  <text x="${X(-110.5)}" y="${Y(37)+18}" font-size="11" fill="#a08a6a" font-weight="600" letter-spacing="2">ARIZONA</text>
+  <text x="${X(-116.05)}" y="${Y(37.5)}" font-size="11" fill="#a08a6a" font-weight="600" letter-spacing="1">NEVADA</text>
+  <text x="${X(-109.0)}" y="${Y(34.2)}" font-size="9" fill="#b3a081" transform="rotate(90 ${X(-109.0)} ${Y(34.2)})" letter-spacing="1">NOUVEAU-MEXIQUE</text>
+  <text x="${X(-112.9)}" y="${Y(31.33)+16}" font-size="10" fill="#b3a081" letter-spacing="2">MEXIQUE</text>
+  <!-- Itinéraire -->
+  <path d="${path}" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" opacity="0.85"/>
+  <path d="${path}" fill="none" stroke="#111" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+  LOCS.forEach(l=>{
+    const x=X(l.lng),y=Y(l.lat),r=l.main?11:7;
+    svg+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${l.main?'#111':'#6b5d4a'}" stroke="#fff" stroke-width="2.2"/>`;
+    if(l.main)svg+=`<text x="${x}" y="${y+4}" font-size="10" fill="#fff" text-anchor="middle" font-weight="600">${l.n}</text>`;
+    const ax=l.anchor==='end'?'end':'start';
+    svg+=`<text x="${x+l.lx}" y="${y+l.ly+4}" font-size="${l.main?12:10}" fill="${l.main?'#111':'#6b5d4a'}" text-anchor="${ax}" font-weight="${l.main?700:400}" paint-order="stroke" stroke="#f3e9d8" stroke-width="3">${l.name}</text>`;
+  });
+  svg+=`</svg>`;
+  document.getElementById('mapsvg').innerHTML=svg;
+  const ml=document.getElementById('maplist');
+  LOCS.forEach(l=>{
+    ml.innerHTML+=`<a class="maploc" href="https://www.google.com/maps/search/?api=1&query=${l.lat},${l.lng}" target="_blank" rel="noopener"><span class="n">${l.n}</span><span class="name">${l.name}</span><span class="d">${l.day}</span><span class="d">↗</span></a>`;
+  });
+})();
+
+// ———————— CHECKLIST (persistante) ————————
+(function(){
+  const KEY='gc-checklist-v2';
+  let saved;
+  const _stored=store.get(KEY);
+  if(_stored){saved=new Set(JSON.parse(_stored));}
+  else{saved=new Set();CHECKLIST.forEach((g,gi)=>g.items.forEach((it,ii)=>{if(it.done)saved.add(gi+'-'+ii);}));}
+  const total=CHECKLIST.reduce((a,g)=>a+g.items.length,0);
+  const wrap=document.getElementById('cl-groups');
+  function refresh(){
+    document.getElementById('cl-count').textContent=`${saved.size} / ${total} fait`;
+    const pct=Math.round(saved.size/total*100);
+    document.getElementById('cl-pct').textContent=pct+'%';
+    document.getElementById('cl-bar').style.width=pct+'%';
+  }
+  CHECKLIST.forEach((g,gi)=>{
+    const div=document.createElement('div');div.className='cl-group';
+    div.innerHTML=`<h3>${g.group}</h3>`;
+    g.items.forEach((it,ii)=>{
+      const key=gi+'-'+ii;
+      const lab=document.createElement('label');
+      lab.className='cl-item'+(saved.has(key)?' done':'');
+      lab.innerHTML=`<input type="checkbox" ${saved.has(key)?'checked':''}><span>${it.t}</span>`;
+      lab.querySelector('input').addEventListener('change',e=>{
+        e.target.checked?saved.add(key):saved.delete(key);
+        lab.classList.toggle('done',e.target.checked);
+        store.set(KEY,JSON.stringify([...saved]));refresh();
+      });
+      div.appendChild(lab);
+    });
+    wrap.appendChild(div);
+  });
+  refresh();
+})();
+
+// ———————— BUDGET (éditable + persistant) ————————
+(function(){
+  const KEY='gc-budget-v2';
+  let real;
+  const _storedB=store.get(KEY);
+  if(_storedB){real=JSON.parse(_storedB);}
+  else{real={};BUDGET.forEach((b,i)=>{if(b.real!=null)real[i]=b.real;});}
+  const rows=document.getElementById('b-rows');
+  const fmt=n=>n.toLocaleString('fr-FR');
+  function totals(){
+    const tMin=BUDGET.reduce((a,b)=>a+b.min,0),tMax=BUDGET.reduce((a,b)=>a+b.max,0);
+    document.getElementById('t-est').textContent=`${fmt(tMin)} – ${fmt(tMax)} €`;
+    const tR=Object.values(real).reduce((a,v)=>a+(parseFloat(v)||0),0);
+    document.getElementById('t-real').textContent=fmt(Math.round(tR))+' €';
+  }
+  BUDGET.forEach((b,i)=>{
+    const div=document.createElement('div');div.className='b-row';
+    div.innerHTML=`<div style="flex:1"><div class="b-post">${b.post}</div><div class="b-detail">${b.detail}</div></div>
+    <div><div class="b-est">est. ${b.min===b.max?fmt(b.min):fmt(b.min)+' – '+fmt(b.max)} €</div>
+    <input class="b-real" type="number" min="0" step="1" placeholder="0 €" value="${real[i]??''}"></div>`;
+    div.querySelector('input').addEventListener('input',e=>{
+      real[i]=e.target.value;store.set(KEY,JSON.stringify(real));totals();
+    });
+    rows.appendChild(div);
+  });
+  totals();
+})();
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
