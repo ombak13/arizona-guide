@@ -85,6 +85,7 @@ svg text{font-family:'DM Sans',sans-serif}
   <button data-tab="carte">Carte</button>
   <button data-tab="checklist">Checklist</button>
   <button data-tab="budget">Budget</button>
+  <button data-tab="valise">Valise</button>
 </nav>
 <div class="pane active" id="pane-programme">
   <div class="switch">
@@ -113,6 +114,14 @@ svg text{font-family:'DM Sans',sans-serif}
     <div class="line big"><span>Dépensé réel</span><span id="t-real">0 €</span></div>
   </div>
   <p class="muted">Hors essence (exclue par préférence). Saisis tes dépenses réelles dans la colonne de droite — elles sont sauvegardées automatiquement. Fourchette haute = The View + lodge in-park. Drop fee one-way à confirmer (0–300 €).</p>
+</div>
+<div class="pane" id="pane-valise">
+  <div class="progress-wrap">
+    <div class="progress-meta"><span id="vl-count"></span><span id="vl-pct"></span></div>
+    <div class="bar"><div id="vl-bar"></div></div>
+  </div>
+  <div id="vl-groups"></div>
+  <p class="muted">Soute, 12 jours sans lessive. Coche au fur et à mesure que tu plies. Clé : système de couches (chaud le jour au sud, gel aux sunrises Bryce/Grand Canyon).</p>
 </div>
 <script>
 // ———————— DONNÉES ————————
@@ -214,6 +223,65 @@ const BUDGET=[
 {post:"Attractions Vegas (Area15, Planet 13, stand de tir)",detail:"journée du 15",min:120,max:220,real:null},
 {post:"Repas",detail:"~50 €/j × 12",min:500,max:700,real:null},
 {post:"Essence + divers",detail:"Queen Mine, musées, pourboires, parkings",min:200,max:350,real:null}
+];
+const PACKING=[
+{group:"Vêtements (12 jours, pas de lessive)",items:[
+{t:"8-9 t-shirts (dont Heattech pour les matins froids)"},
+{t:"2-3 manches longues légères"},
+{t:"Pantalon de rando"},
+{t:"1 jean + 1 short (journées chaudes au sud)"},
+{t:"12-13 sous-vêtements"},
+{t:"~8 chaussettes ville + 4 de rando"},
+{t:"Tenue cabine / nuit"}
+]},
+{group:"Couches froid & altitude",items:[
+{t:"Arc'teryx Atom (midlayer isolant)"},
+{t:"Arc'teryx Beta (hardshell coupe-vent/imper)"},
+{t:"Base layer Heattech (Extra Warm si possible)"},
+{t:"Fine polaire — option sunrises -5°C (Bryce/GC)"},
+{t:"Bonnet"},
+{t:"Gants fins (chaînes froides Angels Landing)"}
+]},
+{group:"Chaussures",items:[
+{t:"Hoka Mafate Speed (rando)"},
+{t:"Sneaker cuir blanche (ville + Vegas — passe la porte des clubs)"},
+{t:"Birkenstock Boston (casual / voiture / hôtel)"}
+]},
+{group:"Désert & soleil",items:[
+{t:"Lunettes de soleil"},
+{t:"Casquette"},
+{t:"Crème solaire"},
+{t:"Stick lèvres"},
+{t:"Gourde réutilisable"},
+{t:"Petit sac à dos rando (à laisser dans la voiture pour Antelope)"}
+]},
+{group:"Tech & route",items:[
+{t:"Adaptateur US + chargeurs"},
+{t:"Batterie externe"},
+{t:"Support téléphone voiture + câble"},
+{t:"Lampe frontale (sunrises avant le jour)"},
+{t:"Écouteurs"},
+{t:"Appareil photo + cartes SD + chargeur (si applicable)"}
+]},
+{group:"Documents & argent",items:[
+{t:"Passeport"},
+{t:"ESTA imprimé (+ PDF sur le tel)"},
+{t:"Permis FR (+ permis international si tu l'as)"},
+{t:"Carte METAL + une 2e carte de secours"},
+{t:"Espèces USD (pourboires guides navajos, diners, stand de tir)"},
+{t:"Confirmations hôtels + réf voiture National 2132386644"}
+]},
+{group:"Toilette & pharmacie",items:[
+{t:"Trousse de toilette format voyage"},
+{t:"Médicaments perso"},
+{t:"Anti-mal des transports (piste Valley Drive)"},
+{t:"Pansements anti-ampoules + petite pharmacie"}
+]},
+{group:"Vegas / sortie & piscine",items:[
+{t:"Tenue sortie (beau haut + pantalon) — déjà dans ta garde-robe"},
+{t:"Sneaker cuir propre pour les clubs"},
+{t:"Maillot de bain (piscines voco + Conrad, jacuzzis)"}
+]}
 ];
 // ———————— STOCKAGE (localStorage avec fallback mémoire) ————————
 const mem={};
@@ -363,6 +431,40 @@ document.querySelectorAll('.switch button').forEach(b=>b.addEventListener('click
     document.getElementById('cl-bar').style.width=pct+'%';
   }
   CHECKLIST.forEach((g,gi)=>{
+    const div=document.createElement('div');div.className='cl-group';
+    div.innerHTML=`<h3>${g.group}</h3>`;
+    g.items.forEach((it,ii)=>{
+      const key=gi+'-'+ii;
+      const lab=document.createElement('label');
+      lab.className='cl-item'+(saved.has(key)?' done':'');
+      lab.innerHTML=`<input type="checkbox" ${saved.has(key)?'checked':''}><span>${it.t}</span>`;
+      lab.querySelector('input').addEventListener('change',e=>{
+        e.target.checked?saved.add(key):saved.delete(key);
+        lab.classList.toggle('done',e.target.checked);
+        store.set(KEY,JSON.stringify([...saved]));refresh();
+      });
+      div.appendChild(lab);
+    });
+    wrap.appendChild(div);
+  });
+  refresh();
+})();
+
+// ———————— VALISE (checklist persistante) ————————
+(function(){
+  const KEY='gc-valise-v1';
+  let saved;
+  const _s=store.get(KEY);
+  saved = _s ? new Set(JSON.parse(_s)) : new Set();
+  const total=PACKING.reduce((a,g)=>a+g.items.length,0);
+  const wrap=document.getElementById('vl-groups');
+  function refresh(){
+    document.getElementById('vl-count').textContent=`${saved.size} / ${total} plié`;
+    const pct=Math.round(saved.size/total*100);
+    document.getElementById('vl-pct').textContent=pct+'%';
+    document.getElementById('vl-bar').style.width=pct+'%';
+  }
+  PACKING.forEach((g,gi)=>{
     const div=document.createElement('div');div.className='cl-group';
     div.innerHTML=`<h3>${g.group}</h3>`;
     g.items.forEach((it,ii)=>{

@@ -1,5 +1,5 @@
 // Service worker — cache le guide pour un usage hors-ligne (zones désertiques sans réseau)
-const CACHE = 'arizona-guide-v2';
+const CACHE = 'arizona-guide-v3';
 const ASSETS = [
   './',
   './index.html',
